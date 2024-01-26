@@ -1,0 +1,14 @@
+
+.sidebar {
+    position: fixed;
+    width: min-content;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    top: 20%;
+    left: 2%;
+    bottom: 40%;
+    height: fit-content;
+}
+
+

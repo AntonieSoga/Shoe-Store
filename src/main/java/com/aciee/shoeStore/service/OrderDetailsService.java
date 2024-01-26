@@ -1,8 +1,7 @@
 package com.aciee.shoeStore.service;
 
-import com.aciee.shoeStore.model.OrderdetailsEntity;
+import com.aciee.shoeStore.model.OrderDetailsEntity;
 import com.aciee.shoeStore.repository.OrderDetailsRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,24 +10,27 @@ import java.util.Optional;
 @Service
 public class OrderDetailsService {
 
-    @Autowired
-    private OrderDetailsRepository orderDetailsRepository;
+    private final OrderDetailsRepository orderDetailsRepository;
 
-    public List<OrderdetailsEntity> getAllOrderDetails() {
+    public OrderDetailsService(OrderDetailsRepository orderDetailsRepository) {
+        this.orderDetailsRepository = orderDetailsRepository;
+    }
+
+    public List<OrderDetailsEntity> getAllOrderDetails() {
         return orderDetailsRepository.findAll();
     }
 
-    public Optional<OrderdetailsEntity> getOrderDetailById(Long orderDetailId) {
+    public Optional<OrderDetailsEntity> getOrderDetailById(Long orderDetailId) {
         return orderDetailsRepository.findById(orderDetailId);
     }
 
-    public OrderdetailsEntity createOrderDetail(OrderdetailsEntity orderDetail) {
-        return orderDetailsRepository.save(orderDetail);
+    public void createOrderDetail(OrderDetailsEntity orderDetail) {
+        orderDetailsRepository.save(orderDetail);
     }
 
-    public OrderdetailsEntity updateOrderDetail(Long orderDetailId, OrderdetailsEntity updatedOrderDetail) {
+    public OrderDetailsEntity updateOrderDetail(Long orderDetailId, OrderDetailsEntity updatedOrderDetail) {
         if (orderDetailsRepository.existsById(orderDetailId)) {
-            updatedOrderDetail.setOrderDetailID(orderDetailId);
+            updatedOrderDetail.setOrderDetailId(orderDetailId);
             return orderDetailsRepository.save(updatedOrderDetail);
         }
         return null; // Handle not found scenario

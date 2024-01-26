@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <link rel="stylesheet" href="/css/cartStyle.css">
+</head>
+<body>
+<div class="container">
+    <header>
+        <div class="header-content">
+            <h1>Shoes Store</h1>
+            <div class="user-actions">
+                <a id="back" th:href="@{/clients}">Back</a>
+                <a id="logoff" th:href="@{/logoff}">Log Off</a>
+            </div>
+        </div>
+    </header>
+
+    <section class="shoes-list" id="cartItemsList">
+        <h2>Your Cart</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Shoe</th>
+                <th>Quantity</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Use Thymeleaf to iterate over cart items -->
+            <tr th:each="cartItem : ${cartItems}">
+                <td th:text="${cartItem.shoeId.brand + ' ' + cartItem.shoeId.model}"></td>
+                <td th:text="${cartItem.quantity}"></td>
+                <td>
+                    <form method="post" th:action="@{/clients/removeFromCart}">
+                        <input type="hidden" name="shoeId" th:value="${cartItem.shoeId.shoeId}">
+                        <button type="submit">Remove</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Single button for Clear Cart and Buy All -->
+    <div class="cart-actions">
+        <form method="post" th:action="@{/clients/cart/clearCart}">
+            <button type="submit" style="margin-bottom: 1%; background-color: forestgreen">Clear Cart</button>
+        </form>
+        <form method="post" th:action="@{/clients/cart/buyAll}">
+            <button type="submit" style="margin-bottom: 1%; background-color: gold">Buy All</button>
+        </form>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Shoes Store. All rights reserved.</p>
+    </footer>
+</div>
+</body>
+</html>

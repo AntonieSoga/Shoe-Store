@@ -1,0 +1,16 @@
+<section class="shoes-list" id="shoesList" th:fragment="shoesListFragment">
+  <!-- This section will be dynamically updated using Thymeleaf and Ajax -->
+  <div th:each="shoe : ${shoes}">
+    <div class="shoe-item">
+      <h2 th:text="${shoe.brand} + ' ' + ${shoe.model}"></h2>
+      <img th:src="${shoe.imageUrl}" th:alt="${shoe.brand} + ' ' + ${shoe.model}">
+      <span th:text="'Size: ' + ${shoe.size}"></span>
+      <span th:text="'Color: ' + ${shoe.color}"></span>
+      <span th:text="'Price: $' + ${shoe.price}"></span>
+      <form>
+        <input type="hidden" name="shoeId" th:value="${shoe.shoeId}" />
+        <button type="button" class="add-to-cart-btn" th:data-shoe-id="${shoe.shoeId}">Add to Cart</button>
+      </form>
+    </div>
+  </div>
+</section>

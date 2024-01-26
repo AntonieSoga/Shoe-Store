@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shoes Store</title>
+    <link rel="stylesheet" href="/css/clientStyle.css">
+    <link rel="stylesheet" href="/css/sidebar.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+</head>
+<body>
+<div class="container">
+    <div class="sidebar">
+        <!-- Inside the form tag -->
+        <div class="filter-section">
+            <form th:action="@{/clients}" method="get">
+                <!-- Price Range -->
+                <label for="slider1Value">Min Price:</label>
+                <span id="slider1Value" th:text="${params != null and params['minPrice'] != null} ? ${params['minPrice']} : '0'"></span>
+                <input type="range" id="slider1" name="minPrice" min="0" max="100"
+                       th:value="${params != null and params['minPrice'] != null} ? ${params['minPrice']} : '0'"
+                       th:oninput="'slider1Value.textContent = this.value'">
+
+                <label for="slider2Value">Max Price:</label>
+                <span id="slider2Value" th:text="${params != null and params['maxPrice'] != null} ? ${params['maxPrice']} : '500'"></span>
+                <input type="range" id="slider2" name="maxPrice" min="101" max="500"
+                       th:value="${params != null and params['maxPrice'] != null} ? ${params['maxPrice']} : '500'"
+                       th:oninput="'slider2Value.textContent = this.value'">
+
+                <!-- Size dropdown -->
+                <label for="sizeDropdown">Size:</label>
+                <select id="sizeDropdown" name="size">
+                    <option value="" th:selected="${params != null and params['size'] == null}">Select Size</option>
+                    <option th:each="size : ${sizes}" th:value="${size}" th:text="${size}"
+                            th:selected="${params != null and params['size'] != null and size == params['size']}"></option>
+                </select>
+
+                <!-- Sorting dropdown -->
+                <br><br>
+                <label for="sortBy">Sort By Price:</label>
+                <select id="sortBy" name="sortBy">
+                    <option value="" th:selected="${params != null and params['sortBy'] == null}">Select</option>
+                    <option value="ASC"
+                            th:selected="${params != null and params['sortBy'] != null and 'ASC' == params['sortBy']}">
+                        Ascending
+                    </option>
+                    <option value="DESC"
+                            th:selected="${params != null and params['sortBy'] != null and 'DESC' == params['sortBy']}">
+                        Descending
+                    </option>
+                </select>
+
+                <!-- Search bar -->
+                <br><br>
+                <label for="search">Search:</label>
+                <input type="text" id="search" name="search" placeholder="Enter keywords"
+                       th:value="${params != null and params['search'] != null} ? ${params['search']} : ''">
+                <br>
+                <button type="submit" id="applyFiltersBtn">Apply Filters</button>
+            </form>
+        </div>
+    </div>
+    <div class="main-content">
+        <header>
+            <div class="header-content">
+                <h1>Shoes Store</h1>
+                <div class="user-actions">
+                    <a id="showCart" href="/clients/cart">Show Cart</a>
+                    <a id="logoff" href="/logoff">Log Off</a>
+                </div>
+            </div>
+        </header>
+        <!-- This is where the filtered content will be loaded -->
+        <div th:replace="fragments/shoesListFragment :: shoesListFragment"></div>
+        <footer>
+            <p>© 2024 Shoes Store. All rights reserved.</p>
+        </footer>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        // Function to add to cart using AJAX
+        function addToCart(shoeId) {
+            $.ajax({
+                type: 'POST',
+                url: '/clients/addToCart',
+                data: {shoeId: shoeId},
+                success: function () {
+                    console.log('Shoe added to cart successfully.');
+                },
+                error: function () {
+                    console.error('Error adding shoe to cart.');
+                }
+            });
+        }
+
+        function saveFiltersToLocalStorage() {
+            localStorage.setItem('minPrice', $('#slider1').val());
+            localStorage.setItem('maxPrice', $('#slider2').val());
+            localStorage.setItem('size', $('#sizeDropdown').val());
+            localStorage.setItem('sortBy', $('#sortBy').val());
+            localStorage.setItem('search', $('#search').val());
+        }
+
+        function retrieveFiltersFromLocalStorage() {
+            $('#slider1').val(localStorage.getItem('minPrice'));
+            $('#slider2').val(localStorage.getItem('maxPrice'));
+            $('#sizeDropdown').val(localStorage.getItem('size'));
+            $('#sortBy').val(localStorage.getItem('sortBy'));
+            $('#search').val(localStorage.getItem('search'));
+            // Update the text content of the spans with the retrieved values
+            $('#slider1Value').text(localStorage.getItem('minPrice') || '0');
+            $('#slider2Value').text(localStorage.getItem('maxPrice') || '500');
+        }
+
+        $('.add-to-cart-btn').click(function () {
+            var shoeId = $(this).data('shoe-id');
+            addToCart(shoeId);
+        });
+        $('#applyFiltersBtn').click(function () {
+            saveFiltersToLocalStorage();
+        });
+        retrieveFiltersFromLocalStorage();
+    });
+</script>
+</body>
+</html>

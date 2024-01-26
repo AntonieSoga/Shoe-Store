@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Shoes Store</title>
+    <link rel="stylesheet" href="/css/adminStyle.css">
+</head>
+<body>
+<div class="container">
+    <header>
+        <div class="header-content">
+            <h1>Admin Dashboard</h1>
+            <div class="header-actions">
+                <section class="import-form">
+                    <form action="/admin/import" method="post" enctype="multipart/form-data">
+                        <input type="file" name="file" />
+                        <button type="submit">Import</button>
+                    </form>
+                </section>
+                <a id="exportPdf" th:href="@{/admin/export?format=pdf}" th:onclick="showExportConfirmation()">Export as PDF</a>
+                <a id="exportExcel" th:href="@{/admin/export?format=xlsx}" th:onclick="showExportConfirmation()">Export as Excel</a>
+                <a id="insert" th:href="@{/admin/insert}">Insert</a>
+                <a id='reports' th:href="@{/admin/reports}">Reports</a>
+<!--                <a id='logs' th:href="@{/admin/logs}">Logs</a>-->
+                <a id='logoff' th:href="@{/logoff}">Log Off</a>
+            </div>
+        </div>
+    </header>
+
+    <section class="shoes-list" id="shoesList">
+        <!-- Shoes will be dynamically added here -->
+        <div th:each="shoe : ${shoes}">
+            <div class="shoe-item">
+                <img th:src="${shoe.imageUrl}" alt="Shoe Image">
+                <h2 th:text="${shoe.brand + ' ' + shoe.model}"></h2>
+                <span th:text="'$' + ${shoe.price}"></span>
+                <div class="admin-actions">
+                    <a class="edit-link" th:href="@{/admin/editShoe(shoeId=${shoe.shoeId})}">Edit</a>
+                    <form th:action="@{/admin/deleteShoe/{shoeId}(shoeId=${shoe.shoeId})}" method="post">
+                        <button class="delete-button" type="submit">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer>
+        <p>&copy; 2024 Shoes Store. All rights reserved.</p>
+    </footer>
+</div>
+</body>
+</html>

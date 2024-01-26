@@ -1,32 +1,40 @@
 package com.aciee.shoeStore.model;
 
-import jakarta.persistence.*;
-import lombok.*;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import javax.persistence.*;
+import java.sql.Timestamp;
+import java.util.Set;
+import lombok.Data;
 
 @Entity
-@Setter
-@ToString
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
-@Table(name = "orders", schema = "public", catalog = "shoeStore")
+@Table(name = "orders")
+@Data
 public class OrdersEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "OrderID")
-    private Long orderID;
+    @Column(name = "order_id")
+    private Long orderId;
 
-    @Column(name = "OrderDate")
-    private LocalDateTime orderDate;
+    @Column(name = "order_date")
+    private Timestamp orderDate;
 
     @ManyToOne
-    @JoinColumn(name = "UserID")
-    private UsersEntity user;
+    @JoinColumn(name = "username")
+    private UsersEntity username;
 
-    @Column(name = "TotalAmount", nullable = false)
-    private BigDecimal totalAmount;
+    @Column(name = "total_amount", nullable = false)
+    private Double totalAmount;
 
+    @OneToMany(mappedBy = "orderId")
+    private Set<OrderDetailsEntity> orderDetails;
+
+    public OrdersEntity() {
+        this.orderDate = new Timestamp(System.currentTimeMillis());
+    }
+
+    public OrdersEntity(UsersEntity username, double totalAmount) {
+        this.username=username;
+        this.totalAmount=totalAmount;
+        this.orderDate = new Timestamp(System.currentTimeMillis());
+    }
 }

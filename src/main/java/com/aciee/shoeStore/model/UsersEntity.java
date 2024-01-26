@@ -1,39 +1,30 @@
 package com.aciee.shoeStore.model;
 
-import jakarta.persistence.*;
-import lombok.*;
+import javax.persistence.*;
+import java.util.Set;
+import lombok.Data;
 
 @Entity
-@Setter
-@ToString
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
-@Table(name = "users", schema = "public", catalog = "shoeStore")
+@Table(name = "users")
+@Data
 public class UsersEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "UserID")
-    private Long userID;
 
-    @Column(name = "Username", nullable = false)
+    @Id
+    @Column(name = "username", nullable = false)
     private String username;
 
-    @Column(name = "Password", nullable = false)
+    @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "Email", nullable = false)
-    private String email;
+    @Column(name = "enabled", nullable = false)
+    private boolean enabled;
 
-    @Column(name = "FirstName")
-    private String firstName;
+    @OneToMany(mappedBy = "username")
+    private Set<AuthoritiesEntity> authorities;
 
-    @Column(name = "LastName")
-    private String lastName;
+    @OneToMany(mappedBy = "username")
+    private Set<CartEntity> carts;
 
-    @Column(name = "Address")
-    private String address;
-
-    @Column(name = "Phone")
-    private String phone;
+    @OneToMany(mappedBy = "username")
+    private Set<OrdersEntity> orders;
 }

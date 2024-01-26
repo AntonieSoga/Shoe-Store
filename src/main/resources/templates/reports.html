@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Report - Admin</title>
+    <link rel="stylesheet" href="/css/report.css">
+    <!-- Add Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div class="container">
+    <header>
+        <div class="header-content">
+            <h1>Inventory Report</h1>
+            <div class="header-actions">
+                <a href="/admin">Back to Dashboard</a>
+            </div>
+        </div>
+    </header>
+
+    <section class="inventory-list">
+        <!-- Display inventory information here -->
+        <table class="rounded-table">
+            <thead>
+            <tr>
+                <th>Shoe</th>
+                <th>Current Stock</th>
+                <th>Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Use Thymeleaf to iterate over inventory data -->
+            <tr th:each="shoe : ${inventory}">
+                <td th:text="${shoe.brand + ' ' + shoe.model}"></td>
+                <td th:text="${shoe.quantity}"></td>
+                <td th:text="${shoe.quantity == 0 ? 'Out of Stock' : (shoe.quantity < 10 ? 'Low Stock' : 'In Stock')}"></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <!-- Canvas for the chart -->
+        <canvas id="inventoryChart"></canvas>
+
+        <!-- JavaScript to render the chart -->
+        <script th:inline="javascript">
+            document.addEventListener('DOMContentLoaded', function () {
+                var ctx = document.getElementById('inventoryChart').getContext('2d');
+
+                var labels = Array.from(document.querySelectorAll('.rounded-table tbody tr td:nth-child(1)')).map(function (item) {
+                    return item.textContent.trim();
+                });
+
+                var quantities = Array.from(document.querySelectorAll('.rounded-table tbody tr td:nth-child(2)')).map(function (item) {
+                    return parseInt(item.textContent.trim());
+                });
+
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Quantity',
+                            data: quantities,
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            },
+                            x: {
+                                beginAtZero: true
+                            }
+                        },
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+            });
+        </script>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Shoes Store. All rights reserved.</p>
+    </footer>
+</div>
+</body>
+</html>
